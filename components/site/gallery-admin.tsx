@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { upload } from "@vercel/blob/client";
 import { AlertCircle, CheckCircle2, LoaderCircle, LogOut, Trash2, UploadCloud } from "lucide-react";
 
@@ -65,6 +65,8 @@ export function GalleryAdmin() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedCount, setSelectedCount] = useState(0);
 
   async function refresh() {
     const response = await fetch("/api/gallery", { cache: "no-store" });
@@ -120,10 +122,11 @@ export function GalleryAdmin() {
   async function addPhotos(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
-    const input = form.elements.namedItem("photos");
-    const files = input instanceof HTMLInputElement ? Array.from(input.files ?? []) : [];
+    const input = fileInputRef.current;
+    const files = input ? Array.from(input.files ?? []) : [];
     if (!files.length) {
-      setError("Choose at least one JPG, PNG, WebP, or AVIF image.");
+      setError("");
+      input?.click();
       return;
     }
     const allowed = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
@@ -169,6 +172,8 @@ export function GalleryAdmin() {
       }
       await refresh();
       form.reset();
+      setSelectedCount(0);
+      if (fileInputRef.current) fileInputRef.current.value = "";
       setMessage("Photos successfully added to the gallery.");
     } catch (cause) {
       if (uploadedCount > 0) {
@@ -231,8 +236,27 @@ export function GalleryAdmin() {
             <form className="gallery-upload-form" onSubmit={addPhotos}>
               <label htmlFor="gallery-photos">Choose Project Photos</label>
               <p>JPG, PNG, WebP, or AVIF. You can select several photos at once. Maximum 15 MB per photo.</p>
-              <input id="gallery-photos" name="photos" type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple disabled={busy} />
-              <button className="button" type="submit" disabled={busy}>{busy ? <><LoaderCircle className="spinner" size={18}/> Uploading…</> : <><UploadCloud size={18}/> Add Photos</>}</button>
+              <input
+                ref={fileInputRef}
+                id="gallery-photos"
+                name="photos"
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/avif"
+                multiple
+                disabled={busy}
+                onClick={(event) => {
+                  event.currentTarget.value = "";
+                  setSelectedCount(0);
+                }}
+                onChange={(event) => setSelectedCount(event.currentTarget.files?.length ?? 0)}
+              />
+              <button className="button" type="submit" disabled={busy}>
+                {busy ? (
+                  <><LoaderCircle className="spinner" size={18}/> Uploading…</>
+                ) : (
+                  <><UploadCloud size={18}/> {selectedCount > 0 ? `Add Photos (${selectedCount})` : "Choose Photos"}</>
+                )}
+              </button>
             </form>
             {message && <p className={`gallery-admin-feedback ${message.startsWith("Uploading") || message.startsWith("Preparing") ? "progress" : "success"}`} role="status" aria-live="polite">{message.startsWith("Uploading") || message.startsWith("Preparing") ? <LoaderCircle className="spinner" size={18}/> : <CheckCircle2 size={18}/>}<span>{message}</span></p>}
             <div className="gallery-admin-list"><h3>Photos in the public gallery ({images.length})</h3>{images.length > 0 ? <div className="gallery-admin-grid">{images.map((image) => <article key={image.id} className="gallery-admin-card"><img src={image.thumbnailUrl || image.url} alt={image.title} loading="lazy"/><div><strong>{image.title || readableName(image.pathname)}</strong><button type="button" onClick={() => removePhoto(image)} disabled={busy}><Trash2 size={17}/><span>Remove Photo</span></button></div></article>)}</div> : <p className="gallery-admin-note">No photos are currently displayed in the public gallery.</p>}</div>
