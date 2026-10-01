@@ -36,24 +36,75 @@ function uploadPath(id: string, file: File, width?: 640 | 1280, original = false
 }
 
 async function makeWebpVariants(file: File) {
-  const bitmap = await createImageBitmap(file);
+  const objectUrl = URL.createObjectURL(file);
+
   try {
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+
+      const timeout = window.setTimeout(() => {
+        reject(new Error("The photo took too long to prepare. Please try again."));
+      }, 15000);
+
+      img.onload = () => {
+        window.clearTimeout(timeout);
+        resolve(img);
+      };
+
+      img.onerror = () => {
+        window.clearTimeout(timeout);
+        reject(new Error("This photo could not be prepared. Please try JPG or PNG."));
+      };
+
+      img.src = objectUrl;
+    });
+
     const variants: File[] = [];
+
     for (const width of [640, 1280] as const) {
-      const scale = Math.min(1, width / Math.max(bitmap.width, bitmap.height));
+      const sourceWidth = image.naturalWidth;
+      const sourceHeight = image.naturalHeight;
+
+      const scale = Math.min(
+        1,
+        width / Math.max(sourceWidth, sourceHeight)
+      );
+
       const canvas = document.createElement("canvas");
-      canvas.width = Math.max(1, Math.round(bitmap.width * scale));
-      canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+      canvas.width = Math.max(1, Math.round(sourceWidth * scale));
+      canvas.height = Math.max(1, Math.round(sourceHeight * scale));
+
       const context = canvas.getContext("2d");
-      if (!context) throw new Error("This photo could not be prepared. Please try another image.");
-      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", 0.82));
-      if (!blob || blob.type !== "image/webp") throw new Error("This browser could not optimize the photo. Please try JPG or PNG in an up-to-date browser.");
-      variants.push(new File([blob], `${safeBaseName(file)}-${width}.webp`, { type: "image/webp", lastModified: Date.now() }));
+
+      if (!context) {
+        throw new Error("This photo could not be prepared.");
+      }
+
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+      const blob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob(resolve, "image/webp", 0.82);
+      });
+
+      if (!blob) {
+        throw new Error("This browser could not optimize the photo.");
+      }
+
+      variants.push(
+        new File(
+          [blob],
+          `${safeBaseName(file)}-${width}.webp`,
+          {
+            type: "image/webp",
+            lastModified: Date.now(),
+          }
+        )
+      );
     }
+
     return variants;
   } finally {
-    bitmap.close();
+    URL.revokeObjectURL(objectUrl);
   }
 }
 
