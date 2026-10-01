@@ -29,9 +29,10 @@ The quote form posts directly to the server-side `/api/quote` endpoint. On succe
 
 ## Client photo gallery
 
-- `/gallery` is the public gallery. It includes the current selected projects and any new uploads.
-- `/gallery-admin` is the private client upload page. Share this URL and the gallery password with the client.
-- Create a **public** Vercel Blob store from the project's **Storage** tab and connect it to Production. Vercel adds the storage credentials to the project. Public access is intentional because the uploaded project photos are displayed on the website.
-- Set `GALLERY_ADMIN_PASSWORD` in Vercel to a unique password of at least 20 characters. Share it with the client through a private channel.
-- The client can upload multiple JPG, PNG, WebP, or AVIF photos (up to 15 MB each), review the uploaded gallery, and remove a photo if needed.
-- Upload authorization is checked server-side; the browser receives a short-lived upload token only after the client signs in.
+- `/gallery` starts with a curated set of real Reliable HVAC photos supplied in the project archives. Images are optimized WebP sizes and loaded lazily. Later uploads appear alongside the initial photos.
+- `/gallery-admin` is the private client photo manager. The discreet **Client Access** link on `/gallery` leads to it.
+- In Vercel, create a **public** Blob store from the project's **Storage** tab and connect it to Production. Vercel then supplies `BLOB_READ_WRITE_TOKEN` to the project; do not add a token to the source or commit it. Public access is needed so visitors can view uploaded project photos.
+- Set `GALLERY_ADMIN_PASSWORD` in the Vercel Production environment to a unique password with at least 20 characters. Redeploy after setting environment values, then share the password privately with the client.
+- The client can upload multiple JPG, JPEG, PNG, WebP, or AVIF photos up to 15 MB each, preview all public photos, and remove uploaded photos or hide initial photos from the public gallery. Uploads are resized without cropping into 640 px and 1280 px WebP images; the original is also kept in Blob and removed with its public versions.
+- Upload authorization is checked server-side; a short-lived upload token is issued only after the client signs in. The session expires after 12 hours.
+- `RESEND_API_KEY` and `RESEND_FROM_EMAIL` remain separate server-only settings for quote requests. They are not used by Gallery.

@@ -1,0 +1,1 @@
+These are the selected original JPEGs from the owner-provided Reliable HVAC photo archives. They are kept in the source project outside `public/`; the website serves the optimized WebP derivatives from `public/gallery/`.

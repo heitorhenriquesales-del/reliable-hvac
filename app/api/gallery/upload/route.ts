@@ -20,13 +20,15 @@ export async function POST(request: Request) {
         if (!hasGallerySession(request)) {
           throw new Error("Sign in to upload gallery photos.");
         }
-        if (!pathname.startsWith("gallery/") || pathname.includes("..")) {
+        const publicPhotoPath = /^gallery\/[a-z0-9-]+\/[a-z0-9-]+-(640|1280)\.webp$/i.test(pathname);
+        const originalPhotoPath = /^gallery-originals\/[a-z0-9-]+\/original\.(jpe?g|png|webp|avif)$/i.test(pathname);
+        if (!publicPhotoPath && !originalPhotoPath) {
           throw new Error("Invalid gallery image path.");
         }
         return {
           allowedContentTypes: ["image/jpeg", "image/png", "image/webp", "image/avif"],
           maximumSizeInBytes: 15 * 1024 * 1024,
-          addRandomSuffix: true,
+          addRandomSuffix: false,
           cacheControlMaxAge: 31536000,
         };
       },

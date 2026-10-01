@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { upload } from "@vercel/blob/client";
 import { AlertCircle, CheckCircle2, LoaderCircle, LogOut, Trash2, UploadCloud } from "lucide-react";
 
-type GalleryImage = { url: string; pathname: string; uploadedAt: string };
+type GalleryImage = { id: string; source: "seed" | "blob"; url: string; thumbnailUrl?: string; pathname: string; uploadedAt: string; title: string };
 
 function readableName(pathname: string) {
   return pathname
@@ -17,16 +17,44 @@ function readableName(pathname: string) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase()) || "HVAC Project";
 }
 
-function uploadPath(file: File) {
-  const extension = file.type === "image/jpeg" ? "jpg" : file.type.split("/")[1];
-  const base = file.name
+function safeBaseName(file: File) {
+  return file.name
     .replace(/\.[^.]+$/, "")
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "") || "hvac-project";
-  return `gallery/${Date.now()}-${base}.${extension}`;
+}
+
+function uploadPath(id: string, file: File, width?: 640 | 1280, original = false) {
+  if (original) {
+    const extension = file.type === "image/jpeg" ? "jpg" : file.type.split("/")[1];
+    return `gallery-originals/${id}/original.${extension}`;
+  }
+  return `gallery/${id}/${safeBaseName(file)}-${width}.webp`;
+}
+
+async function makeWebpVariants(file: File) {
+  const bitmap = await createImageBitmap(file);
+  try {
+    const variants: File[] = [];
+    for (const width of [640, 1280] as const) {
+      const scale = Math.min(1, width / Math.max(bitmap.width, bitmap.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+      canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("This photo could not be prepared. Please try another image.");
+      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", 0.82));
+      if (!blob || blob.type !== "image/webp") throw new Error("This browser could not optimize the photo. Please try JPG or PNG in an up-to-date browser.");
+      variants.push(new File([blob], `${safeBaseName(file)}-${width}.webp`, { type: "image/webp", lastModified: Date.now() }));
+    }
+    return variants;
+  } finally {
+    bitmap.close();
+  }
 }
 
 export function GalleryAdmin() {
@@ -52,9 +80,12 @@ export function GalleryAdmin() {
   }
 
   useEffect(() => {
-    refresh()
-      .catch(() => setError("Photo storage is not set up yet."))
-      .finally(() => setChecking(false));
+    const timer = window.setTimeout(() => {
+      refresh()
+        .catch(() => setError("Photo storage is not set up yet."))
+        .finally(() => setChecking(false));
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   async function signIn(event: React.FormEvent<HTMLFormElement>) {
@@ -105,18 +136,45 @@ export function GalleryAdmin() {
     setBusy(true);
     setError("");
     setMessage("");
+    let uploadedCount = 0;
     try {
       for (const [index, file] of files.entries()) {
+        setMessage(`Preparing photo ${index + 1} of ${files.length}: ${file.name}`);
+        const optimizedVariants = await makeWebpVariants(file);
+        const id = crypto.randomUUID();
         setMessage(`Uploading ${index + 1} of ${files.length}: ${file.name}`);
-        await upload(uploadPath(file), file, {
-          access: "public",
-          handleUploadUrl: "/api/gallery/upload",
-        });
+        let publicImage: Awaited<ReturnType<typeof upload>> | null = null;
+        try {
+          for (const [variantIndex, optimized] of optimizedVariants.entries()) {
+            publicImage = await upload(uploadPath(id, file, variantIndex === 0 ? 640 : 1280), optimized, {
+              access: "public",
+              handleUploadUrl: "/api/gallery/upload",
+            });
+          }
+          await upload(uploadPath(id, file, undefined, true), file, {
+            access: "public",
+            handleUploadUrl: "/api/gallery/upload",
+          });
+        } catch (cause) {
+          if (publicImage) {
+            await fetch("/api/gallery", {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ id: publicImage.pathname, source: "blob" }),
+            }).catch(() => undefined);
+          }
+          throw cause;
+        }
+        uploadedCount += 1;
       }
       await refresh();
       form.reset();
-      setMessage(`${files.length} photo${files.length === 1 ? "" : "s"} added to the website gallery.`);
+      setMessage("Photos successfully added to the gallery.");
     } catch (cause) {
+      if (uploadedCount > 0) {
+        await refresh().catch(() => undefined);
+        setMessage("Photos successfully added to the gallery.");
+      }
       setError(cause instanceof Error ? cause.message : "The photos could not be uploaded.");
     } finally {
       setBusy(false);
@@ -124,7 +182,7 @@ export function GalleryAdmin() {
   }
 
   async function removePhoto(image: GalleryImage) {
-    if (!window.confirm(`Remove “${readableName(image.pathname)}” from the website gallery?`)) return;
+    if (!window.confirm("Are you sure you want to remove this photo from the website gallery?")) return;
     setBusy(true);
     setError("");
     setMessage("");
@@ -132,7 +190,7 @@ export function GalleryAdmin() {
       const response = await fetch("/api/gallery", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: image.url }),
+        body: JSON.stringify({ id: image.id, source: image.source }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "The photo could not be removed.");
@@ -150,7 +208,7 @@ export function GalleryAdmin() {
       <section className="page-hero blue-hero">
         <div className="wrap">
           <p className="eyebrow">RELIABLE HVAC</p>
-          <h1>Gallery<br />management.</h1>
+          <h1>Gallery<br />Management.</h1>
           <div className="page-hero-bottom"><p>Add project photos to the public website gallery.</p></div>
         </div>
         <div className="page-orbit" aria-hidden="true" />
@@ -167,21 +225,20 @@ export function GalleryAdmin() {
         ) : (
           <>
             <div className="gallery-admin-heading">
-              <div><p className="eyebrow">CLIENT GALLERY</p><h2>Manage project photos.</h2></div>
+              <div><p className="eyebrow">CLIENT GALLERY</p><h2>Manage Project Photos</h2><p className="gallery-admin-intro">Upload new project photos or remove images currently displayed in the public gallery.</p></div>
               <button type="button" className="gallery-logout" onClick={signOut}><LogOut size={17}/> Sign out</button>
             </div>
             <form className="gallery-upload-form" onSubmit={addPhotos}>
-              <label htmlFor="gallery-photos">Choose project photos</label>
-              <p>JPG, PNG, WebP, or AVIF. Up to 15 MB per photo. You can select several at once.</p>
+              <label htmlFor="gallery-photos">Choose Project Photos</label>
+              <p>JPG, PNG, WebP, or AVIF. You can select several photos at once. Maximum 15 MB per photo.</p>
               <input id="gallery-photos" name="photos" type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple disabled={busy} />
-              <button className="button" type="submit" disabled={busy}>{busy ? <><LoaderCircle className="spinner" size={18}/> Uploading…</> : <><UploadCloud size={18}/> Add photos</>}</button>
+              <button className="button" type="submit" disabled={busy}>{busy ? <><LoaderCircle className="spinner" size={18}/> Uploading…</> : <><UploadCloud size={18}/> Add Photos</>}</button>
             </form>
-            {message && <p className="gallery-admin-feedback success"><CheckCircle2 size={18}/>{message}</p>}
-            {images.length > 0 && <div className="gallery-admin-list"><h3>Photos in the public gallery ({images.length})</h3><div className="gallery-admin-grid">{images.map((image) => <article key={image.url} className="gallery-admin-card"><img src={image.url} alt={readableName(image.pathname)} loading="lazy"/><div><strong>{readableName(image.pathname)}</strong><button type="button" aria-label={`Remove ${readableName(image.pathname)}`} onClick={() => removePhoto(image)} disabled={busy}><Trash2 size={17}/></button></div></article>)}</div></div>}
-            {!images.length && <p className="gallery-admin-note">No uploaded photos yet. The existing project photos remain visible on the website.</p>}
+            {message && <p className={`gallery-admin-feedback ${message.startsWith("Uploading") || message.startsWith("Preparing") ? "progress" : "success"}`} role="status" aria-live="polite">{message.startsWith("Uploading") || message.startsWith("Preparing") ? <LoaderCircle className="spinner" size={18}/> : <CheckCircle2 size={18}/>}<span>{message}</span></p>}
+            <div className="gallery-admin-list"><h3>Photos in the public gallery ({images.length})</h3>{images.length > 0 ? <div className="gallery-admin-grid">{images.map((image) => <article key={image.id} className="gallery-admin-card"><img src={image.thumbnailUrl || image.url} alt={image.title} loading="lazy"/><div><strong>{image.title || readableName(image.pathname)}</strong><button type="button" onClick={() => removePhoto(image)} disabled={busy}><Trash2 size={17}/><span>Remove Photo</span></button></div></article>)}</div> : <p className="gallery-admin-note">No photos are currently displayed in the public gallery.</p>}</div>
           </>
         )}
-        {error && <p className="gallery-admin-feedback error"><AlertCircle size={18}/>{error}</p>}
+        {error && <p className="gallery-admin-feedback error" role="alert"><AlertCircle size={18}/>{error}</p>}
       </section>
     </main>
   );
