@@ -6,7 +6,7 @@ import { ArrowUpRight, Menu, X, Globe } from "lucide-react";
 import {site} from "@/content/site";
 export function ButtonLink({href,children,kind="",onClick}:{href:string;children:React.ReactNode;kind?:string;onClick?:React.MouseEventHandler<HTMLAnchorElement>}) {return <a className={"button "+kind} href={href} onClick={onClick}>{children}<ArrowUpRight size={18}/></a>}
 export function Logo(){return <a href="/#home" className="brand" aria-label={`${site.name} home`}><img src={site.logo} alt="Reliable HVAC logo" width="1448" height="1086"/></a>}
-const links=[["Home","/#home"],["Services & Projects","/services-projects#services"],["About","/about#about"],["Contact","/about#contact"]] as const;
+const links=[["Home","/#home"],["Services & Projects","/services-projects#services"],["Gallery","/gallery"],["About","/about#about"],["Contact","/about#contact"]] as const;
 export function Header(){
  const path=usePathname();
  const [menu,setMenu]=useState({path:"",open:false});
