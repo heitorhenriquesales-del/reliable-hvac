@@ -17,8 +17,9 @@ const media = (id: string, file: string, alt: string, position?: string): PhotoD
 export const site = {
   name: "Reliable HVAC",
   publicUrl: process.env.NEXT_PUBLIC_SITE_URL || "",
-  quoteEndpoint: "",
-  // This is the original logo supplied with the existing site. Its artwork is preserved.
+  quoteEndpoint: "/api/quote",
+  contactEmail: "Reliableconstruct@yahoo.com",
+  // Client-provided transparent Reliable HVAC logo, shared by the header, footer, and browser tab.
   logo: "/brand/reliable-construct-cropped.png",
   socials: { instagram: "https://www.instagram.com/reliablehvac_stefan?stkn=MTJwcDZpOTRtMmxxdQ==", facebook: "https://www.facebook.com/share/19WUBDieaG/?mibextid=wwXIfr", google: "https://share.google/4jl1lz7MNhL7CM5Ew" },
 };

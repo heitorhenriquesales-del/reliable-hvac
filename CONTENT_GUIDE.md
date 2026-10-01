@@ -18,8 +18,7 @@ Replace neutral service entries with confirmed names and descriptions. Add genui
 Add verified HTTPS links to site.socials. Empty links render noninteractive labeled placeholders.
 
 ## Quote integration
-site.quoteEndpoint is intentionally empty. The form validates input but does not send or claim success.
-Configure a same-origin API endpoint or trusted HTTPS form provider. It must accept JSON {name,email,phone,project} and return HTTP 2xx with {"success":true} only after a real acceptance.
+site.quoteEndpoint is intentionally empty. The quote form opens the visitor’s email app with a pre-addressed draft to site.contactEmail; the visitor must review and press Send. Configure a same-origin API endpoint or trusted HTTPS form provider to accept submissions directly. It must accept JSON {name,email,phone,project} and return HTTP 2xx with {"success":true} only after a real acceptance.
 Implement server validation, request size limits, spam protection/rate limits, safe mail header handling and logging without full personal payloads. Store provider secrets only in server environment variables, never in content/site.ts.
 Client supports loading, success, timeout and error states. Data is not saved to localStorage. Confirm data handling/privacy copy with the company before activation. Test actual delivery after destination is provided.
 

@@ -63,7 +63,7 @@ export default function About() {
             <p className="eyebrow">LET’S GET STARTED</p>
             <h2>Let’s talk<br />about your<br /><span>comfort.</span></h2>
             <p>Have a question or a project in mind? Tell us a little about it.</p>
-            <p><a className="text-link" href="tel:+17737267560">+1 (773) 726-7560</a><br />Mundelein, Illinois<br />Serving the greater Chicago area.</p>
+            <p><a className="text-link" href="tel:+17737267560">+1 (773) 726-7560</a><br /><a className="text-link" href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a><br />Mundelein, Illinois<br />Serving the greater Chicago area.</p>
             <div className="contact-line" aria-hidden="true" />
           </div>
           <QuoteForm />
