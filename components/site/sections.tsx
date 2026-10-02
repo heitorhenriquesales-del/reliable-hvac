@@ -1,10 +1,11 @@
+import {ArrowUpRight} from "lucide-react";
 import {services,reviews,site} from "@/content/site";
 import {Photo} from "./photo";
 import {ButtonLink} from "./chrome";
 import {GoogleReviews} from "./google-reviews";
 export function SectionHeading({eyebrow,title,children}:{eyebrow:string;title:React.ReactNode;children?:React.ReactNode}){return <div className="section-heading" data-reveal><div><p className="eyebrow">{eyebrow}</p><h2>{title}</h2></div>{children}</div>}
 export function Services({compact=false}:{compact?:boolean}){
- if(compact){return <div className="services-grid">{services.filter(s=>s.featured).map(s=><a href={`/services-projects#${s.id}`} className="service-card" key={s.id} aria-label={`Explore ${s.title}`} data-reveal><Photo photo={s.photo!}/><div className="service-content"><h3>{s.title}</h3><p>{s.summary}</p></div></a>)}</div>}
+ if(compact){return <div className="services-grid">{services.filter(s=>s.featured).map(s=><a href={`/services-projects#${s.id}`} className="service-card" key={s.id} aria-label={`Explore ${s.title}`} data-reveal><Photo photo={s.photo!}/><div className="service-content"><h3>{s.title}</h3><p>{s.summary}</p><span className="text-link">Explore service <ArrowUpRight size={18} aria-hidden="true"/></span></div></a>)}</div>}
  return <div className="service-detail-grid">{services.map(s=><article className="service-detail" key={s.id} id={s.id} data-reveal><h3>{s.title}</h3><p>{s.description}</p></article>)}</div>
 }
 export function Reviews({full=false}:{full?:boolean}){return <section className={"reviews-section "+(full?"reviews-full":"")} id="reviews"><div className="wrap reviews-layout" data-reveal><div><p className="eyebrow">WHAT OUR CLIENTS SAY</p><h2>Good work.<br/>Real words.</h2><p className="muted">A place for our clients’ experiences.</p></div>{reviews.length?<GoogleReviews reviews={reviews} googleUrl={site.socials.google}/>:<div className="review-box"><p>Verified customer feedback will appear here when it is available.</p><span className="pending-label">REVIEWS PENDING</span></div>}</div></section>}
