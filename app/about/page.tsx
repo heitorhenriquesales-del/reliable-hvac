@@ -53,7 +53,6 @@ export default function About() {
         </div>
         <div>
           <Socials />
-          {site.socials.google && <a className="text-link" href={site.socials.google} target="_blank" rel="noopener noreferrer">Read our Google reviews ↗</a>}
         </div>
       </section>
 
