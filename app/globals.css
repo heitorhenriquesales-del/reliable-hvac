@@ -251,8 +251,8 @@ html.route-leaving body>main{animation:none;transform:translateY(-9px);filter:bl
 .page-hero-bottom nav a:hover,.page-hero-bottom nav a:focus-visible{background:#ffffff38}
 .main-nav a{padding:10px 0;margin:0;border-radius:0;background:transparent}
 .main-nav a:hover,.main-nav a:focus-visible{background:transparent;color:var(--blue)}
-.footer-grid>div>a:not(.brand):not(.footer-contact){width:max-content;max-width:100%;padding:4px 7px;margin-left:-7px;border-radius:3px;background:rgba(6,90,186,.065);transition:background-color .2s,color .2s}
-.footer-grid>div>a:not(.brand):not(.footer-contact):hover,.footer-grid>div>a:not(.brand):not(.footer-contact):focus-visible{background:rgba(6,90,186,.10);color:var(--blue)}
+.footer-grid>div>a:not(.brand):not(.footer-contact){width:max-content;max-width:100%;transition:color .2s}
+.footer-grid>div>a:not(.brand):not(.footer-contact):hover,.footer-grid>div>a:not(.brand):not(.footer-contact):focus-visible{color:var(--blue);text-decoration:underline;text-underline-offset:3px}
 .service-content .text-link{margin:0;pointer-events:none}
 .project-teaser>span{display:inline-flex;align-items:center;justify-content:flex-start;gap:18px;width:fit-content;max-width:100%;padding:10px 15px;margin-top:10px;border:1px solid rgba(6,90,186,.18);border-radius:999px;background:rgba(6,90,186,.065);box-shadow:inset 0 1px 0 #ffffffa6;backdrop-filter:blur(6px)}
 .project-teaser>span svg{flex-shrink:0}
