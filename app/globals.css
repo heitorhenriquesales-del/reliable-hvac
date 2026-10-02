@@ -273,6 +273,7 @@ html.route-leaving body>main{animation:none;transform:translateY(-9px);filter:bl
 .reviews-layout{grid-template-columns:1fr 1fr;gap:clamp(45px,7vw,100px)}
 .google-reviews{min-width:0}
 .google-reviews .review-box{animation:review-arrive .45s ease both}
+.google-reviews .review-box p{white-space:pre-line}
 .review-stars{color:#f5bc42;letter-spacing:.12em;font-size:17px;line-height:1;margin:0 0 14px}
 .google-reviews .review-box cite{display:block;color:white;font-style:normal;font-weight:700;margin:16px 0 14px}
 .review-controls{display:flex;align-items:center;gap:14px;margin:15px 0 0 65px;color:#c1c9d4;font-size:14px}
@@ -324,3 +325,7 @@ html.route-leaving body>main{animation:none;transform:translateY(-9px);filter:bl
  .header-inner{gap:5px}
 }
 @media(prefers-reduced-motion:reduce){.google-reviews .review-box{animation:none!important}.header-socials a,.review-controls button{transition:none!important}}
+/* Keep the contact details on the blue About section as clean text links. */
+.contact-copy .text-link,.contact-copy .text-link:hover,.contact-copy .text-link:focus-visible{min-height:0;padding:0;margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;backdrop-filter:none}
+.contact-copy .text-link::before{content:none}
+.contact-copy .text-link:hover,.contact-copy .text-link:focus-visible{text-decoration:underline;text-underline-offset:3px}

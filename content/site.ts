@@ -179,10 +179,15 @@ export const projects = [
   { id: "project-6", number: "06", title: "Ductless Mini-Split", description: "A wall-mounted ductless mini-split indoor unit.", photo: photos.project6 },
 ];
 
-export type Review = { id: string; quote: string; name: string; project?: string };
+export type Review = { id: string; quote: string; name: string; rating?: number; project?: string };
 export const reviews: Review[] = [
-  { id: "google-ana", name: "Ana Tereza Formigoni Fleury", quote: "The service was excellent! I completely recommend it.", project: "Google review" },
-  { id: "google-adriana", name: "Adriana Bueno", quote: "Great and reliable service!", project: "Google review" },
+  { id: "google-matheus", name: "Matheus Schmidt", rating: 5, quote: "We found Stephan through a referral in a local WhatsApp group when we were looking to install a whole-house humidifier. He showed up right on time, was very respectful, and made sure to keep everything clean during the installation.\n\nThe job ended up being more complex than initially expected, but he took the time to make sure everything was done properly and working perfectly. Even with the extra work he honored the original quote.\n\nI’m very happy with the result and would definitely recommend Stephan for plumbing or HVAC work." },
+  { id: "google-cristiane", name: "Cristiane Pimont Mescolin", rating: 5, quote: "Very friendly and knowledgeable technician, and very accommodating to my schedule. Definitely recommend and will have again." },
+  { id: "google-priscila", name: "Priscila Salvador", rating: 5, quote: "Great service! Stefan is super professional. My system is working perfectly and I feel super confident to recommend him!" },
+  { id: "google-ana", name: "Ana Tereza Formigoni Fleury", rating: 5, quote: "The service was excellent! I completely recommend it." },
+  { id: "google-adriana", name: "Adriana Bueno", rating: 5, quote: "Great and reliable service!" },
+  { id: "google-foundation", name: "Foundation For learning", rating: 5, quote: "Great price\n\nStefan did an amazing job at my house!\nHe installed all of the heated floor, boilers, everything! Even my garage has heated floors now.\nSuper professional, respectful, on time and honest. Highly recommend!" },
+  { id: "google-stefan", name: "stefan bigiu", rating: 5, quote: "" },
 ];
 
 export const companyStory = [
