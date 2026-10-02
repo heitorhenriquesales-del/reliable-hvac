@@ -89,12 +89,14 @@ export async function DELETE(request: Request) {
     if (!blob) {
       return NextResponse.json({ error: "Image not found." }, { status: 404 });
     }
-    const uploadId = blob.pathname.match(/^gallery\/([a-z0-9-]+)\//i)?.[1];
-    if (uploadId) {
-      const folder = `gallery/${uploadId}/`;
+    const uploadParts = blob.pathname.split("/");
+    const uploadId = uploadParts.length === 3 ? uploadParts[1] : uploadParts.length === 4 ? uploadParts[2] : undefined;
+    if (uploadId && /^[a-f0-9-]{36}$/i.test(uploadId)) {
+      const category = uploadParts.length === 4 ? `${uploadParts[1]}/` : "";
+      const folder = `gallery/${category}${uploadId}/`;
       const variants = blobs.filter((item) => item.pathname.startsWith(folder) && /\.(jpe?g|png|webp|avif)$/i.test(item.pathname));
       for (const variant of variants) await del(variant.url);
-      const { blobs: originals } = await list({ prefix: `gallery-originals/${uploadId}/`, limit: 10 });
+      const { blobs: originals } = await list({ prefix: `gallery-originals/${category}${uploadId}/`, limit: 10 });
       for (const original of originals) await del(original.url);
     } else {
       await del(blob.url);

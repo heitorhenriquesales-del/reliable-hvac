@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { upload } from "@vercel/blob/client";
-import { AlertCircle, CheckCircle2, LoaderCircle, LogOut, Trash2, UploadCloud } from "lucide-react";
+import { AlertCircle, CheckCircle2, Folder, LoaderCircle, LogOut, Trash2, UploadCloud } from "lucide-react";
+import { folderFromImage, galleryFolders, type GalleryFolder } from "@/lib/gallery-folders";
 
 type GalleryImage = { id: string; source: "seed" | "blob"; url: string; thumbnailUrl?: string; pathname: string; uploadedAt: string; title: string };
 
@@ -27,12 +28,12 @@ function safeBaseName(file: File) {
     .replace(/^-|-$/g, "") || "hvac-project";
 }
 
-function uploadPath(id: string, file: File, width?: 640 | 1280, original = false) {
+function uploadPath(folder: GalleryFolder, id: string, file: File, width?: 640 | 1280, original = false) {
   if (original) {
     const extension = file.type === "image/jpeg" ? "jpg" : file.type.split("/")[1];
-    return `gallery-originals/${id}/original.${extension}`;
+    return `gallery-originals/${folder}/${id}/original.${extension}`;
   }
-  return `gallery/${id}/${safeBaseName(file)}-${width}.webp`;
+  return `gallery/${folder}/${id}/${safeBaseName(file)}-${width}.webp`;
 }
 
 async function makeWebpVariants(file: File) {
@@ -118,6 +119,9 @@ export function GalleryAdmin() {
   const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedCount, setSelectedCount] = useState(0);
+  const [uploadFolder, setUploadFolder] = useState<GalleryFolder>("outdoor-hvac");
+  const [activeFolder, setActiveFolder] = useState<GalleryFolder | "all">("all");
+  const visibleImages = activeFolder === "all" ? images : images.filter((image) => folderFromImage(image.pathname, image.title) === activeFolder);
 
   async function refresh() {
     const response = await fetch("/api/gallery", { cache: "no-store" });
@@ -200,12 +204,12 @@ export function GalleryAdmin() {
         let publicImage: Awaited<ReturnType<typeof upload>> | null = null;
         try {
           for (const [variantIndex, optimized] of optimizedVariants.entries()) {
-            publicImage = await upload(uploadPath(id, file, variantIndex === 0 ? 640 : 1280), optimized, {
+            publicImage = await upload(uploadPath(uploadFolder, id, file, variantIndex === 0 ? 640 : 1280), optimized, {
               access: "public",
               handleUploadUrl: "/api/gallery/upload",
             });
           }
-          await upload(uploadPath(id, file, undefined, true), file, {
+          await upload(uploadPath(uploadFolder, id, file, undefined, true), file, {
             access: "public",
             handleUploadUrl: "/api/gallery/upload",
           });
@@ -225,6 +229,7 @@ export function GalleryAdmin() {
       form.reset();
       setSelectedCount(0);
       if (fileInputRef.current) fileInputRef.current.value = "";
+      setActiveFolder(uploadFolder);
       setMessage("Photos successfully added to the gallery.");
     } catch (cause) {
       if (uploadedCount > 0) {
@@ -285,6 +290,10 @@ export function GalleryAdmin() {
               <button type="button" className="gallery-logout" onClick={signOut}><LogOut size={17}/> Sign out</button>
             </div>
             <form className="gallery-upload-form" onSubmit={addPhotos}>
+              <label htmlFor="gallery-folder">Project folder</label>
+              <select id="gallery-folder" value={uploadFolder} onChange={(event) => setUploadFolder(event.target.value as GalleryFolder)} disabled={busy}>
+                {galleryFolders.map((folder) => <option key={folder.id} value={folder.id}>{folder.label}</option>)}
+              </select>
               <label htmlFor="gallery-photos">Choose Project Photos</label>
               <p>JPG, PNG, WebP, or AVIF. You can select several photos at once. Maximum 15 MB per photo.</p>
               <input
@@ -310,7 +319,18 @@ export function GalleryAdmin() {
               </button>
             </form>
             {message && <p className={`gallery-admin-feedback ${message.startsWith("Uploading") || message.startsWith("Preparing") ? "progress" : "success"}`} role="status" aria-live="polite">{message.startsWith("Uploading") || message.startsWith("Preparing") ? <LoaderCircle className="spinner" size={18}/> : <CheckCircle2 size={18}/>}<span>{message}</span></p>}
-            <div className="gallery-admin-list"><h3>Photos in the public gallery ({images.length})</h3>{images.length > 0 ? <div className="gallery-admin-grid">{images.map((image) => <article key={image.id} className="gallery-admin-card"><img src={image.thumbnailUrl || image.url} alt={image.title} loading="lazy"/><div><strong>{image.title || readableName(image.pathname)}</strong><button type="button" onClick={() => removePhoto(image)} disabled={busy}><Trash2 size={17}/><span>Remove Photo</span></button></div></article>)}</div> : <p className="gallery-admin-note">No photos are currently displayed in the public gallery.</p>}</div>
+            <div className="gallery-admin-list">
+              <h3>Photos in the public gallery ({images.length})</h3>
+              <div className="gallery-folder-grid" aria-label="Project folders">
+                <button type="button" className={`gallery-folder ${activeFolder === "all" ? "active" : ""}`} onClick={() => setActiveFolder("all")} aria-pressed={activeFolder === "all"}><Folder size={23}/><span>All Photos</span><small>{images.length} photos</small></button>
+                {galleryFolders.map((folder) => {
+                  const count = images.filter((image) => folderFromImage(image.pathname, image.title) === folder.id).length;
+                  return <button key={folder.id} type="button" className={`gallery-folder ${activeFolder === folder.id ? "active" : ""}`} onClick={() => setActiveFolder(folder.id)} aria-pressed={activeFolder === folder.id}><Folder size={23}/><span>{folder.label}</span><small>{count} {count === 1 ? "photo" : "photos"}</small></button>;
+                })}
+              </div>
+              <h4 className="gallery-folder-title">{activeFolder === "all" ? "All Photos" : galleryFolders.find((folder) => folder.id === activeFolder)?.label} <span>({visibleImages.length})</span></h4>
+              {visibleImages.length > 0 ? <div className="gallery-admin-grid">{visibleImages.map((image) => <article key={image.id} className="gallery-admin-card"><img src={image.thumbnailUrl || image.url} alt={image.title} loading="lazy"/><div><strong>{image.title || readableName(image.pathname)}</strong><button type="button" onClick={() => removePhoto(image)} disabled={busy}><Trash2 size={17}/><span>Remove Photo</span></button></div></article>)}</div> : <p className="gallery-admin-note">No photos in this folder yet.</p>}
+            </div>
           </>
         )}
         {error && <p className="gallery-admin-feedback error" role="alert"><AlertCircle size={18}/>{error}</p>}

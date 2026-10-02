@@ -1,6 +1,7 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 import { hasGallerySession } from "@/lib/gallery-auth";
+import { galleryFolders } from "@/lib/gallery-folders";
 
 export const runtime = "nodejs";
 
@@ -20,8 +21,10 @@ export async function POST(request: Request) {
         if (!hasGallerySession(request)) {
           throw new Error("Sign in to upload gallery photos.");
         }
-        const publicPhotoPath = /^gallery\/[a-z0-9-]+\/[a-z0-9-]+-(640|1280)\.webp$/i.test(pathname);
-        const originalPhotoPath = /^gallery-originals\/[a-z0-9-]+\/original\.(jpe?g|png|webp|avif)$/i.test(pathname);
+        const parts = pathname.split("/");
+        const folderValid = galleryFolders.some((folder) => folder.id === parts[1]);
+        const publicPhotoPath = folderValid && /^gallery\/[a-z0-9-]+\/[a-f0-9-]{36}\/[a-z0-9-]+-(640|1280)\.webp$/i.test(pathname);
+        const originalPhotoPath = folderValid && /^gallery-originals\/[a-z0-9-]+\/[a-f0-9-]{36}\/original\.(jpe?g|png|webp|avif)$/i.test(pathname);
         if (!publicPhotoPath && !originalPhotoPath) {
           throw new Error("Invalid gallery image path.");
         }
