@@ -329,3 +329,13 @@ html.route-leaving body>main{animation:none;transform:translateY(-9px);filter:bl
 .contact-copy .text-link,.contact-copy .text-link:hover,.contact-copy .text-link:focus-visible{min-height:0;padding:0;margin:0;border:0;border-radius:0;background:transparent;box-shadow:none;backdrop-filter:none}
 .contact-copy .text-link::before{content:none}
 .contact-copy .text-link:hover,.contact-copy .text-link:focus-visible{text-decoration:underline;text-underline-offset:3px}
+/* Long testimonials keep the carousel compact; the full text opens in a dialog. */
+.google-reviews .review-box p.review-excerpt{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;white-space:normal}
+.review-expand{display:inline-block;margin-top:10px;padding:0;border:0;background:none;color:#fff;font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:4px}
+.review-expand:hover{color:#d8e7ff}
+.google-review-dialog{width:min(620px,calc(100vw - 32px));max-width:none!important;max-height:80dvh;overflow-y:auto;border:1px solid #ffffff36;border-radius:20px;background:#25282d;color:white;padding:clamp(24px,4vw,38px)}
+.google-review-dialog [data-slot="dialog-close"]{color:white;border-radius:50%;padding:7px}
+.google-review-dialog .review-stars{margin:0;color:#f5bc42}
+.google-review-dialog [data-slot="dialog-title"]{padding-right:30px;font-size:22px;line-height:1.25}
+.google-review-dialog-quote{white-space:pre-line;color:#dce2e9;font-size:17px;line-height:1.7}
+.google-review-dialog-link{width:fit-content;margin-top:8px;color:#fff;font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:4px}
