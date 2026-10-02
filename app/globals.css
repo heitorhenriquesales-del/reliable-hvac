@@ -217,3 +217,119 @@ html.route-leaving body>main{animation:none;transform:translateY(-9px);filter:bl
 .gallery-heading-side{display:flex;flex-direction:column;align-items:flex-end;gap:10px}.gallery-admin-link{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--blue);transition:color .2s,transform .2s}.gallery-admin-link:hover{color:var(--red);transform:translateX(2px)}.gallery-admin-intro{margin-top:12px;max-width:640px;color:#69717d;font-size:14px;line-height:1.6}.gallery-admin-card button{gap:6px;padding:10px 12px;font-size:12px}.gallery-admin-card button span{white-space:nowrap}
 .gallery-admin-feedback.progress{color:var(--blue)}
 @media(max-width:650px){.gallery-heading-side{align-items:flex-start;margin-top:18px}.gallery-admin-card>div{flex-direction:column;align-items:stretch}.gallery-admin-card button{align-self:flex-start;min-height:42px}}
+/* Final client readability + clickable cues */
+
+/* Slightly larger descriptive text across the site */
+.hero-description,
+.intro-bottom p,
+.service-content p,
+.service-detail p,
+.services-intro,
+.page-hero-bottom p,
+.heading-note,
+.review-box p,
+.principles p,
+.principle-extra p,
+.cta-description {
+  font-size: 16px;
+  line-height: 1.72;
+}
+
+.service-content h3 {
+  margin: 0 0 14px;
+}
+
+.service-detail h3 {
+  margin: 0 0 14px;
+}
+
+.service-content p,
+.service-detail p {
+  margin-bottom: 0;
+}
+
+.footer p,
+.footer-grid > div > a:not(.brand) {
+  font-size: 14px;
+}
+
+/* Subtle translucent indicator showing that cards are clickable */
+.service-card,
+.project-teaser,
+.gallery-card {
+  position: relative;
+}
+
+.service-card::after,
+.project-teaser::after,
+.gallery-card::after {
+  content: "↗";
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 5;
+
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid rgba(255,255,255,.45);
+  border-radius: 50%;
+
+  background: rgba(7,91,180,.78);
+  color: #fff;
+
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  box-shadow: 0 6px 18px rgba(22,39,69,.18);
+
+  pointer-events: none;
+
+  opacity: .88;
+
+  transition:
+    opacity .25s ease,
+    transform .25s ease,
+    background-color .25s ease;
+}
+
+.service-card:hover::after,
+.project-teaser:hover::after,
+.gallery-card:hover::after {
+  opacity: 1;
+  transform: translate(2px,-2px);
+  background: rgba(7,91,180,.92);
+}
+
+@media(max-width:650px) {
+  .hero-description,
+  .intro-bottom p,
+  .service-content p,
+  .service-detail p,
+  .services-intro,
+  .page-hero-bottom p,
+  .heading-note,
+  .review-box p,
+  .principles p,
+  .principle-extra p,
+  .cta-description {
+    font-size: 16px;
+  }
+
+  .service-card::after,
+  .project-teaser::after,
+  .gallery-card::after {
+    width: 38px;
+    height: 38px;
+    top: 11px;
+    right: 11px;
+    opacity: .92;
+  }
+}
