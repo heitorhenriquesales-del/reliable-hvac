@@ -57,13 +57,13 @@ export default function Home() {
       <div className="brand-ribbon" aria-hidden="true"><div><span>HEATING & COOLING</span><span className="ribbon-star">✳</span><span>QUALITY WORKMANSHIP</span><span className="ribbon-star">✳</span><span>COMFORT YOU CAN COUNT ON</span><span className="ribbon-star">✳</span><span>HEATING & COOLING</span><span className="ribbon-star">✳</span><span>QUALITY WORKMANSHIP</span></div></div>
 
       <section className="wrap intro section" id="intro" data-reveal>
-        <p className="eyebrow">BUILT ON RELIABILITY</p>
-        <div>
+        <div className="intro-heading">
+          <p className="eyebrow"><span className="small-rule" aria-hidden="true" />BUILT ON RELIABILITY</p>
           <h2>Comfort you<br /><span className="blue-text">can count on.</span></h2>
-          <div className="intro-bottom">
-            <p>A locally owned HVAC company built on quality workmanship, honest recommendations, and dependable service.</p>
-            <a href="/about#about" className="text-link">Meet Reliable HVAC <ArrowUpRight size={18} /></a>
-          </div>
+        </div>
+        <div className="intro-bottom">
+          <p>A locally owned HVAC company built on quality workmanship, honest recommendations, and dependable service.</p>
+          <a href="/about#about" className="text-link">Meet Reliable HVAC <ArrowUpRight size={18} /></a>
         </div>
       </section>
 
