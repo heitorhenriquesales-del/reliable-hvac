@@ -36,3 +36,10 @@ The quote form posts directly to the server-side `/api/quote` endpoint. On succe
 - The client can upload multiple JPG, JPEG, PNG, WebP, or AVIF photos up to 15 MB each, preview all public photos, and remove uploaded photos or hide initial photos from the public gallery. Uploads are resized without cropping into 640 px and 1280 px WebP images; the original is also kept in Blob and removed with its public versions.
 - Upload authorization is checked server-side; a short-lived upload token is issued only after the client signs in. The session expires after 12 hours.
 - `RESEND_API_KEY` and `RESEND_FROM_EMAIL` remain separate server-only settings for quote requests. They are not used by Gallery.
+
+## Google reviews
+
+- The homepage review carousel requests `/api/google-reviews`, which reads the verified Google Business Profile reviews and follows every page so all reviews can rotate through the carousel.
+- To connect it in Vercel, enable the Google Business Profile API for an OAuth app and authorize an account that manages the verified Reliable HVAC listing with the `business.manage` scope. Add `GOOGLE_BUSINESS_ACCOUNT_ID`, `GOOGLE_BUSINESS_LOCATION_ID`, `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, and `GOOGLE_OAUTH_REFRESH_TOKEN` as server-only Production environment variables.
+- Keep the OAuth client secret and refresh token out of GitHub and source files. Until these variables are set, the site shows the two review excerpts already verified in the source content.
+- The carousel changes review every 6.5 seconds, has previous/next controls, and refreshes its Google data every 30 minutes. The server route caches successful API responses for 30 minutes.

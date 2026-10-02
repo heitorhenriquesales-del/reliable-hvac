@@ -217,119 +217,99 @@ html.route-leaving body>main{animation:none;transform:translateY(-9px);filter:bl
 .gallery-heading-side{display:flex;flex-direction:column;align-items:flex-end;gap:10px}.gallery-admin-link{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--blue);transition:color .2s,transform .2s}.gallery-admin-link:hover{color:var(--red);transform:translateX(2px)}.gallery-admin-intro{margin-top:12px;max-width:640px;color:#69717d;font-size:14px;line-height:1.6}.gallery-admin-card button{gap:6px;padding:10px 12px;font-size:12px}.gallery-admin-card button span{white-space:nowrap}
 .gallery-admin-feedback.progress{color:var(--blue)}
 @media(max-width:650px){.gallery-heading-side{align-items:flex-start;margin-top:18px}.gallery-admin-card>div{flex-direction:column;align-items:stretch}.gallery-admin-card button{align-self:flex-start;min-height:42px}}
-/* Final client readability + clickable cues */
 
-/* Slightly larger descriptive text across the site */
-.hero-description,
-.intro-bottom p,
-.service-content p,
-.service-detail p,
-.services-intro,
-.page-hero-bottom p,
-.heading-note,
-.review-box p,
-.principles p,
-.principle-extra p,
-.cta-description {
-  font-size: 16px;
-  line-height: 1.72;
+
+/* Slightly clearer affordance and readable descriptive copy, preserving the existing visual system. */
+.text-link{position:relative;isolation:isolate;padding:5px 9px;margin:-5px -9px}
+.text-link::before{content:"";position:absolute;z-index:-1;inset:0;background:rgba(6,90,186,.075);border-radius:2px;pointer-events:none;transition:background-color .22s ease,transform .22s ease}
+.text-link:hover::before,.text-link:focus-visible::before{background:rgba(6,90,186,.14)}
+.text-link:active::before{background:rgba(6,90,186,.2);transform:scale(.98)}
+.hero-description,.intro-bottom p,.service-content p,.service-detail p,.services-intro,.about-story p:not(.eyebrow),.principles p,.principle-extra p,.review-box p,.cta-description,.heading-note,.page-hero-bottom p,.social-section p:not(.eyebrow),.contact-copy>p:not(.eyebrow){font-size:16px}
+@media(max-width:800px){.hero-description,.intro-bottom p,.service-content p,.service-detail p,.services-intro,.about-story p:not(.eyebrow),.principles p,.principle-extra p,.review-box p,.cta-description,.heading-note,.page-hero-bottom p,.social-section p:not(.eyebrow),.contact-copy>p:not(.eyebrow){font-size:16px}}
+@media(max-width:650px){.hero-description,.intro-bottom p,.service-content p,.service-detail p,.services-intro,.about-story p:not(.eyebrow),.principles p,.principle-extra p,.review-box p,.cta-description,.heading-note,.page-hero-bottom p,.social-section p:not(.eyebrow),.contact-copy>p:not(.eyebrow){font-size:16px}}
+@media(prefers-reduced-motion:reduce){.text-link::before{transition:none}}
+
+/* Client refinements: clear tap targets, compact header socials, and larger body copy. */
+.header-inner{gap:clamp(16px,2.2vw,34px)}
+.header-brand-group{display:flex;align-items:center;gap:16px;flex-shrink:0}
+.header .brand{width:196px;margin:0;}
+.header .brand img{max-height:106px}
+.header-socials{display:flex;align-items:center;gap:9px}
+.header-socials a{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;color:#fff;box-shadow:0 3px 10px #10253a24;transition:transform .22s ease,filter .22s ease}
+.header-socials a[aria-label^="Instagram"]{background:linear-gradient(135deg,#f9ce34 0%,#ee2a7b 48%,#6228d7 100%)}
+.header-socials a[aria-label^="Facebook"]{background:#1877f2}
+.header-socials a:hover{transform:translateY(-2px);filter:brightness(.96)}
+.header-socials a:active{transform:scale(.94)}
+.header .main-nav{gap:clamp(14px,1.8vw,28px)}
+.text-link{min-height:44px;padding:9px 13px;margin:-9px -13px;border:1px solid rgba(6,90,186,.24);border-radius:3px;background:rgba(6,90,186,.10);box-shadow:inset 0 0 0 1px rgba(255,255,255,.38);}
+.text-link::before{inset:0;background:rgba(6,90,186,.04);border-radius:2px}
+.text-link:hover::before,.text-link:focus-visible::before{background:rgba(6,90,186,.12)}
+.text-link:active::before{background:rgba(6,90,186,.19)}
+.gallery-admin-link{min-height:42px;padding:8px 12px;border:1px solid rgba(6,90,186,.24);border-radius:3px;background:rgba(6,90,186,.09)}
+.hero-bottom a{min-height:44px;padding:8px 12px;border:1px solid rgba(6,90,186,.22);border-radius:3px;background:rgba(6,90,186,.08)}
+.footer-grid>div>a:not(.brand):not(.footer-contact){width:max-content;max-width:100%;padding:4px 7px;margin-left:-7px;border-radius:3px;transition:background-color .2s,color .2s}
+.footer-grid>div>a:not(.brand):not(.footer-contact):hover,.footer-grid>div>a:not(.brand):not(.footer-contact):focus-visible{background:rgba(6,90,186,.10);color:var(--blue)}
+.socials{margin-top:18px}
+.footer-socials a{width:42px!important;height:42px!important;color:#fff!important;background:#4285f4;border:0!important;border-radius:50%}
+.footer-socials a:hover{background:#2c69d2!important;color:white!important}
+.socials a.social-instagram{background:linear-gradient(135deg,#f9ce34 0%,#ee2a7b 48%,#6228d7 100%);color:#fff;border-color:transparent}
+.socials a.social-facebook{background:#1877f2;color:#fff;border-color:transparent}
+.socials a.social-google{background:#4285f4;color:#fff;border-color:transparent}
+.socials a.social-instagram:hover{background:linear-gradient(135deg,#edbe20 0%,#d9236d 48%,#5221c2 100%);color:#fff}
+.socials a.social-facebook:hover{background:#1265d2;color:#fff}
+.socials a.social-google:hover{background:#2c69d2;color:#fff}
+.photo>a,.photo>button{display:none!important}
+.reviews-layout{grid-template-columns:1fr 1fr;gap:clamp(45px,7vw,100px)}
+.google-reviews{min-width:0}
+.google-reviews .review-box{animation:review-arrive .45s ease both}
+.review-stars{color:#f5bc42;letter-spacing:.12em;font-size:17px;line-height:1;margin:0 0 14px}
+.google-reviews .review-box cite{display:block;color:white;font-style:normal;font-weight:700;margin:16px 0 14px}
+.review-controls{display:flex;align-items:center;gap:14px;margin:15px 0 0 65px;color:#c1c9d4;font-size:14px}
+.review-controls button{display:grid;place-items:center;width:42px;height:42px;border:1px solid #ffffff4a;border-radius:50%;background:#ffffff12;color:white;transition:background .2s,transform .2s}
+.review-controls button:hover,.review-controls button:focus-visible{background:#ffffff2b}
+.review-controls button:active{transform:scale(.94)}
+@keyframes review-arrive{from{opacity:.35;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.header-quote{white-space:nowrap}
+.hero-description,.intro-bottom p,.service-content p,.service-detail p,.services-intro,.about-story p:not(.eyebrow),.principles p,.principle-extra p,.review-box p,.cta-description,.heading-note,.page-hero-bottom p,.social-section p:not(.eyebrow),.contact-copy>p:not(.eyebrow){font-size:17px}
+.page-hero-bottom nav,.main-nav a,.text-link,.gallery-admin-link{font-size:15px}
+.footer p,.footer-grid>div>a:not(.brand){font-size:14px}
+.form-hint,.form-availability,.field-error{font-size:13px}
+.field label{font-size:14px}
+.button{font-size:13px}
+.gallery-caption small,.pending-label,.eyebrow{font-size:11px}
+@media(max-width:1100px) and (min-width:651px){
+ .header-inner{gap:14px}
+ .header-brand-group{gap:9px}
+ .header .brand{width:158px}
+ .header-socials{gap:6px}
+ .header-socials a{width:38px;height:38px}
+ .header .main-nav{gap:11px}
+ .header .main-nav a{font-size:13px}
+ .header-quote{padding:11px 12px;font-size:11px;gap:10px}
 }
-
-.service-content h3 {
-  margin: 0 0 14px;
+@media(max-width:650px){
+ .header-inner{height:100px;width:calc(100% - 24px);gap:7px}
+ .header-brand-group{gap:6px}
+ .header .brand{width:112px}
+ .header .brand img{max-height:82px}
+ .header-socials{gap:5px}
+ .header-socials a{width:31px;height:31px}
+ .header-socials svg{width:18px;height:18px}
+ .header-quote{margin-left:auto;min-height:40px;padding:9px 9px;font-size:9px;gap:5px;letter-spacing:.025em}
+ .header-quote svg{width:13px}
+ .menu-toggle{padding:7px}
+ .main-nav{top:100px}
+ .hero-buttons .text-link{font-size:13px;padding:8px 10px;margin:-8px -10px}
+ .review-controls{margin-left:0}
+ .reviews-layout{grid-template-columns:1fr}
+ .review-box{padding:30px 0 0}
+ .footer-socials{margin-top:12px}
+ .header-socials a:hover{transform:none}
 }
-
-.service-detail h3 {
-  margin: 0 0 14px;
+@media(max-width:370px){
+ .header .brand{width:102px}
+ .header-socials a{width:29px;height:29px}
+ .header .header-quote{padding:8px 7px;font-size:8px}
+ .header-inner{gap:5px}
 }
-
-.service-content p,
-.service-detail p {
-  margin-bottom: 0;
-}
-
-.footer p,
-.footer-grid > div > a:not(.brand) {
-  font-size: 14px;
-}
-
-/* Subtle translucent indicator showing that cards are clickable */
-.service-card,
-.project-teaser,
-.gallery-card {
-  position: relative;
-}
-
-.service-card::after,
-.project-teaser::after,
-.gallery-card::after {
-  content: "↗";
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 5;
-
-  width: 40px;
-  height: 40px;
-
-  display: grid;
-  place-items: center;
-
-  border: 1px solid rgba(255,255,255,.45);
-  border-radius: 50%;
-
-  background: rgba(7,91,180,.78);
-  color: #fff;
-
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1;
-
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-
-  box-shadow: 0 6px 18px rgba(22,39,69,.18);
-
-  pointer-events: none;
-
-  opacity: .88;
-
-  transition:
-    opacity .25s ease,
-    transform .25s ease,
-    background-color .25s ease;
-}
-
-.service-card:hover::after,
-.project-teaser:hover::after,
-.gallery-card:hover::after {
-  opacity: 1;
-  transform: translate(2px,-2px);
-  background: rgba(7,91,180,.92);
-}
-
-@media(max-width:650px) {
-  .hero-description,
-  .intro-bottom p,
-  .service-content p,
-  .service-detail p,
-  .services-intro,
-  .page-hero-bottom p,
-  .heading-note,
-  .review-box p,
-  .principles p,
-  .principle-extra p,
-  .cta-description {
-    font-size: 16px;
-  }
-
-  .service-card::after,
-  .project-teaser::after,
-  .gallery-card::after {
-    width: 38px;
-    height: 38px;
-    top: 11px;
-    right: 11px;
-    opacity: .92;
-  }
-}
+@media(prefers-reduced-motion:reduce){.google-reviews .review-box{animation:none!important}.header-socials a,.review-controls button{transition:none!important}}
