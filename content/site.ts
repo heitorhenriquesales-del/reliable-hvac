@@ -21,7 +21,7 @@ export const site = {
   contactEmail: "Reliableconstruct@yahoo.com",
   // Client-provided transparent Reliable HVAC logo, shared by the header, footer, and browser tab.
   logo: "/brand/reliable-construct-cropped.png",
-  socials: { instagram: "https://www.instagram.com/reliablehvac_stefan?stkn=MTJwcDZpOTRtMmxxdQ==", facebook: "https://www.facebook.com/share/19WUBDieaG/?mibextid=wwXIfr", google: "https://share.google/4jl1lz7MNhL7CM5Ew" },
+  socials: { instagram: "https://www.instagram.com/reliablehvac_stefan?stkn=MTJwcDZpOTRtMmxxdQ==", facebook: "https://www.facebook.com/share/19WUBDieaG/?mibextid=wwXIfr", google: "https://share.google/YKYpeAJwweiRNP0IJ" },
 };
 
 export const photos = {

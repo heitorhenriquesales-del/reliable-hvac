@@ -355,3 +355,42 @@ html.route-leaving body>main{animation:none;transform:translateY(-9px);filter:bl
 .intro-bottom p{max-width:470px;color:#4f5b69;font-size:clamp(18px,1.55vw,21px);line-height:1.7}
 .intro-bottom .text-link{white-space:nowrap}
 @media(max-width:760px){.intro.section{display:grid;grid-template-columns:1fr;gap:34px;padding-top:70px;padding-bottom:70px}.intro-heading .eyebrow{margin-bottom:22px}.intro-bottom{padding:24px 0 0;border-left:0;border-top:1px solid #cbd8e8;gap:22px}.intro-bottom p{font-size:18px}}
+
+/* Client update: solid, square secondary actions instead of translucent pills. */
+.text-link,.gallery-admin-link,.hero-bottom a,.page-hero-bottom nav a,.project-teaser>span,.gallery-caption>span:first-child{
+ display:inline-flex;align-items:center;justify-content:space-between;gap:18px;
+ min-height:54px;width:max-content;max-width:100%;padding:18px 23px;margin:0;
+ border:0;border-radius:0;background:#242424;color:#fff;
+ box-shadow:none;backdrop-filter:none;text-transform:uppercase;
+ font-size:13px;font-weight:700;letter-spacing:.05em;line-height:1.3;
+ transition:background-color .25s,transform .25s;
+}
+.text-link::before{content:none}
+.text-link:hover,.text-link:focus-visible,.gallery-admin-link:hover,.gallery-admin-link:focus-visible,.hero-bottom a:hover,.hero-bottom a:focus-visible,.page-hero-bottom nav a:hover,.page-hero-bottom nav a:focus-visible,.project-teaser:hover>span,.gallery-card:hover .gallery-caption>span:first-child{background:#000;color:#fff;transform:translateY(-2px)}
+.text-link:active,.hero-bottom a:active{background:#111;color:#fff}
+.service-content .text-link{margin:0}
+.contact-copy .text-link,.contact-copy .text-link:hover,.contact-copy .text-link:focus-visible{min-height:0;width:auto;padding:0;margin:0;border:0;border-radius:0;background:transparent;color:inherit;box-shadow:none;backdrop-filter:none;text-transform:none;letter-spacing:normal;transform:none}
+.header-socials a.social-google{background:#4285f4}
+
+@media(max-width:900px) and (min-width:651px){
+ .header-quote{margin-left:auto}
+ .menu-toggle{display:block}
+ .main-nav{display:none;position:absolute;left:0;right:0;top:90px;background:white;padding:20px 26px 28px;border-bottom:1px solid #d9e0e9;box-shadow:0 15px 22px #0000000c}
+ .main-nav.open{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+ .main-nav a{font-size:17px;padding:12px 0}
+}
+@media(max-width:650px){
+ .header .brand{width:96px}
+ .header-brand-group{gap:5px}
+ .header-socials{gap:3px}
+ .header-socials a{width:27px;height:27px}
+ .header-socials svg{width:16px;height:16px}
+ .header-quote{padding:9px 7px;font-size:8px;gap:3px}
+ .hero-buttons .text-link{min-height:50px;padding:15px 12px;margin:0;font-size:10px;gap:8px}
+ .text-link,.gallery-admin-link,.hero-bottom a,.page-hero-bottom nav a,.project-teaser>span,.gallery-caption>span:first-child{padding:15px 17px;font-size:11px}
+}
+@media(max-width:370px){
+ .header .brand{width:87px}
+ .header-socials a{width:25px;height:25px}
+ .header .header-quote{padding:8px 6px;font-size:8px}
+}
