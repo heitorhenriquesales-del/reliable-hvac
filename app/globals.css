@@ -367,6 +367,15 @@ html.route-leaving body>main{animation:none;transform:translateY(-9px);filter:bl
 }
 .text-link::before{content:none}
 .project-teaser>span{margin-top:24px}
+.admin-analytics{margin:35px 0 45px;padding:30px;background:#f2f5f9;border:1px solid #dce4ed}
+.admin-analytics h3{margin-bottom:12px}.admin-analytics h4{margin:26px 0 12px;font-size:19px}
+.admin-analytics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:22px}
+.admin-analytics-grid>div{padding:20px;background:#fff;border:1px solid #dce4ed;display:flex;flex-direction:column;gap:4px}
+.admin-analytics-grid strong{font-size:30px;line-height:1.2}.admin-analytics-grid span{font-size:13px;color:#566274}
+.admin-analytics-table{overflow:auto}.admin-analytics table{width:100%;border-collapse:collapse;background:#fff;text-align:left}
+.admin-analytics th,.admin-analytics td{padding:10px 14px;border-bottom:1px solid #dce4ed}.admin-analytics-note{margin-top:16px;font-size:13px;color:#566274}
+.footer-bottom .footer-admin-link{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:7px 14px;background:#242424;color:#fff;text-transform:uppercase;letter-spacing:.08em;font-size:11px;font-weight:700}
+.footer-bottom .footer-admin-link:hover,.footer-bottom .footer-admin-link:focus-visible{background:#000;color:#fff}
 .text-link:hover,.text-link:focus-visible,.gallery-admin-link:hover,.gallery-admin-link:focus-visible,.hero-bottom a:hover,.hero-bottom a:focus-visible,.page-hero-bottom nav a:hover,.page-hero-bottom nav a:focus-visible,.project-teaser:hover>span,.gallery-card:hover .gallery-caption>span:first-child{background:#000;color:#fff;transform:translateY(-2px)}
 .text-link:active,.hero-bottom a:active{background:#111;color:#fff}
 .service-content .text-link{margin:0}

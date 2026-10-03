@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { upload } from "@vercel/blob/client";
 import { AlertCircle, CheckCircle2, Folder, LoaderCircle, LogOut, Trash2, UploadCloud } from "lucide-react";
 import { folderFromImage, galleryFolders, type GalleryFolder } from "@/lib/gallery-folders";
+import { AdminAnalytics } from "@/components/site/admin-analytics";
 
 type GalleryImage = { id: string; source: "seed" | "blob"; url: string; thumbnailUrl?: string; pathname: string; uploadedAt: string; title: string };
 
@@ -289,6 +290,7 @@ export function GalleryAdmin() {
               <div><p className="eyebrow">CLIENT GALLERY</p><h2>Manage Project Photos</h2><p className="gallery-admin-intro">Upload new project photos or remove images currently displayed in the public gallery.</p></div>
               <button type="button" className="gallery-logout" onClick={signOut}><LogOut size={17}/> Sign out</button>
             </div>
+            <AdminAnalytics />
             <form className="gallery-upload-form" onSubmit={addPhotos}>
               <label htmlFor="gallery-folder">Project folder</label>
               <select id="gallery-folder" value={uploadFolder} onChange={(event) => setUploadFolder(event.target.value as GalleryFolder)} disabled={busy}>
