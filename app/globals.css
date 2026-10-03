@@ -366,6 +366,7 @@ html.route-leaving body>main{animation:none;transform:translateY(-9px);filter:bl
  transition:background-color .25s,transform .25s;
 }
 .text-link::before{content:none}
+.project-teaser>span{margin-top:24px}
 .text-link:hover,.text-link:focus-visible,.gallery-admin-link:hover,.gallery-admin-link:focus-visible,.hero-bottom a:hover,.hero-bottom a:focus-visible,.page-hero-bottom nav a:hover,.page-hero-bottom nav a:focus-visible,.project-teaser:hover>span,.gallery-card:hover .gallery-caption>span:first-child{background:#000;color:#fff;transform:translateY(-2px)}
 .text-link:active,.hero-bottom a:active{background:#111;color:#fff}
 .service-content .text-link{margin:0}
